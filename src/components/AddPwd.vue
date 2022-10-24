@@ -1,27 +1,72 @@
 <script setup lang="ts">
-let account = '';
-let name = '';
-let password = '';
-let extraInfo = '';
+import { ref } from 'vue';
 
-function onSubmit(e: any) {
+function addPwd(formList: any): boolean {
+  const formData: any = {};
+  formData.account = formList[0].value;
+  formData.name = formList[1].value;
+  formData.password = formList[2].value;
+  formData.extraInfo = formList[3].value;
+  
+  const { indexedDB } = window;
+
+  if (!indexedDB) {
+    alert('当前浏览器不支持本地数据库！');
+    return false;
+  }
+
+  let db;
+  const dbName = 'AccountManager';
+  const request = indexedDB.open(dbName);
+  request.onerror = () => alert('数据库打开失败！请检查是否禁用了indexedDB数据库！');
+  request.onsuccess = () => db = request.result;
+  request.onupgradeneeded = (e: any) => {
+    db = e.target.result;
+  }
+  return false;
+}
+
+function onSubmit(e: any): void{
   e.preventDefault();
-  console.log(e);
+  // const formData = ['account', 'name', 'password', 'extraInfo'];
+  // let formValid = true;
+  // for (const data of formData) {
+  //   const dataNode = document.querySelector(`#input-${data}`) as HTMLInputElement;
+  //   if (!dataNode.value && dataNode.required) {
+  //     dataNode.style.borderColor = 'red';
+  //     dataNode.value = dataNode.name + '是必填项！';
+  //     formValid = false;
+  //   }
+  // };
+  // if (formValid) {
+    addPwd(e.target);
+  // }
+}
+
+function onFocus(e: Event): void {
+  e.preventDefault();
+  const inputElem = e.target as HTMLInputElement;
+  if (inputElem.style.borderColor === 'red') {
+    inputElem.style.borderColor = '';
+    inputElem.value = '';
+  }
 }
 
 </script>
 
 <template>
-  <form>
-    <div input>
-      账户名称：<input type='text' name='account' required oninvalid="setCustomValidity('账户名称不能为空！')" oninput="setCustomValidity('')" />
-      用户名：<input type='text' name='name' required oninvalid="setCustomValidity('用户名不能为空！')" oninput="setCustomValidity('')"/>
-      密码：<input type='password' name='password' required oninvalid="setCustomValidity('密码不能为空！')" oninput="setCustomValidity('')"/>
-      附加信息：<input type="text" name="extraInfo" />
-    </div>
-    <button type='submit' @click="onSubmit">确认</button>
-  </form>
-  <button type="button" @click="$emit('changeRoute', '/')">返回主页</button>
+  <div>
+    <form @submit="onSubmit">
+      <div input>
+        账户名称*：<input id="input-account" type='text' name='账户名称' required @focus="onFocus" />
+        用户名*：<input id="input-name" type='text' name='用户名' required @focus="onFocus"/>
+        密码*：<input id="input-password" type='text' name='密码' required @focus="onFocus"/>
+        附加信息：<input id="input-extraInfo" type="text" name="附加信息" />
+      </div>
+      <button type='submit'>确认</button>
+    </form>
+    <button type="button" @click="$emit('changeRoute', '/')">返回主页</button>
+  </div>
 </template>
 
 <style scoped>
