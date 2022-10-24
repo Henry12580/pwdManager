@@ -28,14 +28,10 @@ function changeRoute(newRoute: string): void {
 </script>
 
 <template>
-  <h1 style="color: #006699">账户管理器</h1>
   <component :is="routes[currentRoute]" @changeRoute="changeRoute"></component>
 </template>
 
 <style scoped> 
-h1 {
-  font-size: 2.5rem;
-}
 .logo {
   height: 6em;
   padding: 1.5em;

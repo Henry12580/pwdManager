@@ -14,6 +14,32 @@
   -webkit-text-size-adjust: 100%;
 }
 
+input {
+  display: block;
+  margin: 0.2rem auto 0.8rem;
+  height: 1.5rem;
+  width: 100%;
+}
+
+button {
+  margin: 0.5rem 0.3rem;
+  border-radius: 0.5rem;
+}
+
+button[type='submit'] {
+  background-color: #006699;
+  color: white;
+  font-weight: bold;
+}
+
+button[type='submit']:hover {
+  outline: red solid 1px;
+}
+
+button[type='button'] {
+  padding: 0.5rem;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
