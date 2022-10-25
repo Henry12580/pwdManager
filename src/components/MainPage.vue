@@ -9,7 +9,7 @@
     <button @click="$emit('changeRoute', '/search')">检索账户</button>
     <button @click="$emit('changeRoute', '/modify')">修改账户</button>
     <button @click="$emit('changeRoute', '/view')">查看所有账户</button>
-    <button @click="$emit('changeRoute', '/export')">导出所有账户</button>
+    <button @click="$emit('changeRoute', '/import')">批量导入账户</button>
   </div>
 </template>
 

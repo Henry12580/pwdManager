@@ -12,25 +12,30 @@ function clearInput() {
   document.querySelectorAll('input').forEach((input: any) => {
     input.value = '';
   })
+  searchResult.value = null;
 }
 
 function onSubmit(event: any) {
   event.preventDefault();
-  if (searchResult.value) {
+  const { value } = searchResult;
+  if (value) {
     window.indexedDB.open(dbName).onsuccess = function(ev: any) {
       let db = ev.target.result;
       const objectStore = db.transaction([tableName], 'readwrite').objectStore(tableName);
-      const getReq = objectStore.index('account').get(searchResult.value.account);
+      const idx = objectStore.index('account');
+      const getReq = idx.get(value.account);
       getReq.onsuccess = function(e: any) {
-        console.log(e.target.result);
-        let data = {...e.target.result, ...searchResult.value};
-        // objectStore.index('account').delete(searchResult.value.account);
-        const updateReq = objectStore.put(data);
-        updateReq.onsuccess = function() {
-          alert('修改成功！');
-        };
-        updateReq.onerror = function(e: any) {
-          alert('数据库修改出错！');
+        let data = {...e.target.result, ...value};
+        idx.getKey(value.account).onsuccess = function(getkeyE: any) {
+          const key = getkeyE.target.result;
+          objectStore.delete(key);
+          const updateReq = objectStore.put(data);
+          updateReq.onsuccess = function() {
+            alert('修改成功！');
+          };
+          updateReq.onerror = function() {
+            alert('数据库修改出错！');
+          }
         }
       };
       getReq.onerror = function() {
@@ -68,6 +73,39 @@ function searchAccount(ev: any) {
   }
 }
 
+function deleteAccount(clickEvent: any) {
+  clickEvent.preventDefault();
+  const { value } = searchResult;
+  if (value) {
+    const confirmed: boolean = confirm('确定删除此账户吗？');
+    if (confirmed) {
+      window.indexedDB.open(dbName).onsuccess = function(ev: any) {
+      let db = ev.target.result;
+      const objectStore = db.transaction([tableName], 'readwrite').objectStore(tableName);
+      const idx = objectStore.index('account');
+      const getReq = idx.getKey(value.account);
+      getReq.onsuccess = function(e: any) {
+        const key = e.target.result;
+        const deleteReq = objectStore.delete(key);
+        deleteReq.onsuccess = function() {
+          alert('删除成功！');
+          allAccounts.account.value = allAccounts.account.value.filter((accountName: string): boolean => {
+            return accountName !== value.account;
+          });
+          searchResult.value = null;
+        };
+        deleteReq.onerror = function() {
+          alert('数据库出错！删除失败！');
+        };
+      };
+      getReq.onerror = function() {
+        alert('数据库访问出错！')
+      }
+    }
+    }
+  }
+}
+
 </script>
 <template>
   <div>
@@ -91,6 +129,7 @@ function searchAccount(ev: any) {
       <button type='submit'>确认修改</button>
       <button type="button" @click="clearInput">清除输入</button>
     </form>
+    <button type="button" @click="deleteAccount" style="color: red">删除账户</button>
     <button type="button" @click="$emit('changeRoute', '/')">返回主页</button>
   </div>
 </template>

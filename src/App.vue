@@ -7,16 +7,17 @@ import ExportRepo from './components/ExportRepo.vue';
 import ModifyPwd from './components/ModifyPwd.vue';
 import SearchPwd from './components/SearchPwd.vue';
 import ViewRepo from './components/ViewRepo.vue';
+import ImportRepo from './components/ImportRepo.vue';
 
 import { ref } from 'vue';
 
 const routes: any = {
   '/': MainPage,
   '/add': AddPwd,
-  '/export': ExportRepo,
   '/modify': ModifyPwd,
   '/search': SearchPwd,
-  '/view': ViewRepo
+  '/view': ViewRepo,
+  '/import': ImportRepo
 }
 
 let currentRoute = ref('/');

@@ -45,10 +45,8 @@ function addPwd(formList: any): boolean {
     objectStore.createIndex('account', 'account', {unique: true});
     objectStore.createIndex('name', 'name', {unique: false});
     objectStore.createIndex('password', 'password', {unique: false});
-
-    addData();
   }
-  
+
   return true;
 }
 
