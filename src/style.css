@@ -21,6 +21,13 @@ input {
   width: 100%;
 }
 
+div[input] {
+  margin: 0 auto;
+  text-align: left;
+  width: 90%;
+  font-weight: bold;
+}
+
 button {
   margin: 0.5rem 0.3rem;
   border-radius: 0.5rem;

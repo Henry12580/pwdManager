@@ -102,14 +102,3 @@ function clearInput() {
     <button type="button" @click="$emit('changeRoute', '/')">返回主页</button>
   </div>
 </template>
-
-<style scoped>
-
-div[input] {
-  margin: 0 auto;
-  text-align: left;
-  width: 90%;
-  font-weight: bold;
-}
-
-</style>
