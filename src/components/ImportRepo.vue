@@ -75,7 +75,7 @@ async function importRepo() {
   const text = await navigator.clipboard.readText();
   const importData = JSON.parse(text);
   addPwd(importData);
-  showAllAccounts();
+  setInterval(showAllAccounts,500);
 }
 
 </script>
