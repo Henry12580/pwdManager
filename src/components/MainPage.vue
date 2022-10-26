@@ -28,7 +28,7 @@ function clearRepo() {
     <button @click="$emit('changeRoute', '/modify')">修改账户</button>
     <button @click="$emit('changeRoute', '/view')">查看所有账户</button>
     <button @click="$emit('changeRoute', '/import')">批量导入账户</button>
-    <button @click="clearRepo()">清空数据库</button>
+    <button @click="clearRepo()" style="background-color:#dddddd; font-weight: 400">清空数据库</button>
   </div>
 </template>
 

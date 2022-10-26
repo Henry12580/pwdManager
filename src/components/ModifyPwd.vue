@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { AES, enc } from 'crypto-js';
 
 const dbName = 'AccountManager';
 const tableName = 'accounts';
+const encrypt_key = 'wodieshihuangxin';
 let searchResult = ref<any>();
 
 const allAccounts: any = {};
@@ -26,6 +28,7 @@ function onSubmit(event: any) {
       const getReq = idx.get(value.account);
       getReq.onsuccess = function(e: any) {
         let data = {...e.target.result, ...value};
+        data.password = AES.encrypt(data.password, encrypt_key).toString();
         idx.getKey(value.account).onsuccess = function(getkeyE: any) {
           const key = getkeyE.target.result;
           objectStore.delete(key);
@@ -55,6 +58,8 @@ function viewAllAccountsBy(keyName: string) {
         if (cursor) {
           allAccounts[keyName].value.push(cursor.key);
           cursor.continue();
+        } else {
+          allAccounts[keyName].value.sort((a: string, b: string) => a < b ? -1 : 1);
         }
       }
     }
@@ -69,6 +74,7 @@ function searchAccount(ev: any) {
     const request = db.transaction(tableName).objectStore(tableName).index('account').get(value);
     request.onsuccess = function(event: any) {
       searchResult.value = event.target.result;
+      searchResult.value.password = AES.decrypt(event.target.result.password, encrypt_key).toString(enc.Utf8);
     }
   }
 }

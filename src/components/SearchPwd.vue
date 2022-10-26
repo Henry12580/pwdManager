@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { AES, enc } from 'crypto-js';
+const encrypt_key = 'wodieshihuangxin';
 
 const dbName = 'AccountManager';
 const tableName = 'accounts';
@@ -25,7 +27,8 @@ function onSubmit(event: any) {
       db.transaction(tableName).objectStore(tableName).openCursor().onsuccess = function(e: any) {
         let cursor = e.target.result;
         if (cursor) {
-          const { value } = cursor;
+          const value = {...cursor.value};
+          value.password = AES.decrypt(value.password, encrypt_key).toString(enc.Utf8);
           if ((!form[0].value || value.account === form[0].value) 
             && (!form[1].value || value.name === form[1].value) 
             && (!form[2].value || value.password === form[2].value)
@@ -50,9 +53,15 @@ function viewAllAccountsBy(keyName: string) {
       const index = db.transaction(tableName).objectStore(tableName).index(keyName);
       index.openKeyCursor().onsuccess = function(e: any) {
         let cursor = e.target.result;
+        const { value } = allAccounts[keyName];
         if (cursor) {
-          allAccounts[keyName].value.push(cursor.key);
+          const keyValue: string = keyName === 'password' ? AES.decrypt(cursor.key, encrypt_key).toString(enc.Utf8) : cursor.key;
+          if (keyName === 'account' || value.indexOf(keyValue) === -1) {
+            value.push(keyValue);
+          }
           cursor.continue();
+        } else {
+          value.sort((a: string, b: string) => a < b ? -1 : 1);
         }
       }
     }
@@ -87,7 +96,7 @@ function clearResult() {
       <button type="button" @click="clearInput">清除输入</button>
     </form>
     <div v-if="searchResult.length">
-      <table rules="rows" frame="below">
+      <table rules="rows" frame="below" cellpadding="5">
         <summary style="background-color: bisque;">查询结果</summary>
         <tr>
           <th>账户名称</th>

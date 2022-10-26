@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { AES, enc } from 'crypto-js';
+const encrypt_key = 'wodieshihuangxin';
 
 const allAccounts = ref<any[]>([]);
-let state = 0;
+// let baseData: any[] = [];
 
 function showAllAccounts() {
   const req = window.indexedDB.open('AccountManager');
@@ -10,6 +12,10 @@ function showAllAccounts() {
     const db = openEvent.target.result;
     db.transaction('accounts').objectStore('accounts').getAll().onsuccess = function(getEvent: any) {
       allAccounts.value = getEvent.target.result;
+      allAccounts.value.forEach((data: any) => {
+        data.password = AES.decrypt(data.password, encrypt_key).toString(enc.Utf8);
+        return data;
+      })
     }
   }
 };
@@ -33,11 +39,8 @@ function addPwd(importData: any): boolean {
   function addData(data: any): void {
     let objectStore = db.transaction(tableName, 'readwrite').objectStore(tableName);
     const addReq = objectStore.add(data);
-    addReq.onsuccess = () => {
-      state++;
-    }
     addReq.onerror = function(): any {
-      const cover = confirm(`账户名称【${data.account}】已存在！是否选择覆盖？`);
+      const cover = confirm(`账户名称【${data.account}】已存在！是否覆盖？`);
       if (cover) {
         objectStore = db.transaction(tableName, 'readwrite').objectStore(tableName);
         const getkeyReq = objectStore.index('account').getKey(data.account);
@@ -45,7 +48,6 @@ function addPwd(importData: any): boolean {
           const key = getKeyEvent.target.result;
           objectStore.delete(key).onsuccess = function() {
             objectStore.put(data);
-            state++;
           };
         };
         getkeyReq.onerror = (e: any) => {
@@ -72,8 +74,8 @@ function addPwd(importData: any): boolean {
 }
 
 async function importRepo() {
-  const text = await navigator.clipboard.readText();
-  const importData = JSON.parse(text);
+  const encryptedText = await navigator.clipboard.readText();
+  const importData = JSON.parse(AES.decrypt(encryptedText, 'huangxinshiwodie').toString(enc.Utf8));
   addPwd(importData);
   setInterval(showAllAccounts,500);
 }
@@ -84,7 +86,7 @@ async function importRepo() {
   <div>
     <h1 style="color: #006699; font-size: 2rem">批量导入账户</h1>
     <div>
-      <table rules="rows" frame="below">
+      <table rules="rows" frame="below" cellpadding="5">
         <summary style="background-color: bisque;">导入结果</summary>
         <tr>
           <th>账户名称</th>
