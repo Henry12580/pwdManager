@@ -34,21 +34,24 @@ async function exportRepo() {
 <template>
   <div>
     <h1 style="color: #006699; font-size: 2rem">查看所有账户</h1>
-    <span style="background-color: bisque; color: black">查询结果</span>
     <div table>
-      <table rules="rows" frame="below" cellpadding="5" >
-        <tr>
-          <th>账户名称</th>
-          <th>用户名</th>
-          <th>密码</th>
-          <th>附加信息</th>
-        </tr>
-        <tr v-for="data in allAccounts">
-          <td>{{data.account}}</td>
-          <td>{{data.name}}</td>
-          <td>{{data.password}}</td>
-          <td>{{data.extraInfo}}</td>
-        </tr>
+      <table rules="all" frame="border" cellpadding="5" >
+        <thead>
+          <tr>
+            <th>账户名称</th>
+            <th>用户名</th>
+            <th>密码</th>
+            <th>附加信息</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="data in allAccounts">
+            <td>{{data.account}}</td>
+            <td>{{data.name}}</td>
+            <td>{{data.password}}</td>
+            <td>{{data.extraInfo}}</td>
+          </tr>
+        </tbody>
       </table>
       <br />
     </div>

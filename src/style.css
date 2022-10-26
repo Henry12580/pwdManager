@@ -131,3 +131,16 @@ div[table] {
     background-color: #f9f9f9;
   }
 }
+
+span[searchResult] {
+  display: inline-block;
+  background-color: bisque; 
+  color: black; 
+  margin-bottom: 0.3em;
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  background-color: #bbbbbb;
+}
