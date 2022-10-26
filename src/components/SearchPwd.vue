@@ -96,24 +96,26 @@ function clearResult() {
       <button type="button" @click="clearInput">清除输入</button>
     </form>
     <div v-if="searchResult.length">
-      <table rules="rows" frame="below" cellpadding="5">
-        <summary style="background-color: bisque;">查询结果</summary>
-        <tr>
-          <th>账户名称</th>
-          <th>用户名</th>
-          <th>密码</th>
-          <th>附加信息</th>
-        </tr>
-        <tr v-for="data in searchResult">
-          <td>{{data.account}}</td>
-          <td>{{data.name}}</td>
-          <td>{{data.password}}</td>
-          <td>{{data.extraInfo}}</td>
-        </tr>
-      </table>
-      <br />
-      <button type="button" @click="clearResult()">返回查询页</button>
+      <span style="background-color: bisque; color: black">查询结果</span>
+      <div table>
+        <table rules="rows" frame="below" cellpadding="5" >
+          <tr>
+            <th>账户名称</th>
+            <th>用户名</th>
+            <th>密码</th>
+            <th>附加信息</th>
+          </tr>
+          <tr v-for="data in searchResult" tableContent>
+            <td>{{data.account}}</td>
+            <td>{{data.name}}</td>
+            <td>{{data.password}}</td>
+            <td>{{data.extraInfo}}</td>
+          </tr>
+        </table>
+        <br />
+      </div>
     </div>
+    <button type="button" @click="clearResult()">返回查询页</button>
     <button type="button" @click="$emit('changeRoute', '/')">返回主页</button>
   </div>
 </template>

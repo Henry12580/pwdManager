@@ -85,9 +85,9 @@ async function importRepo() {
 <template>
   <div>
     <h1 style="color: #006699; font-size: 2rem">批量导入账户</h1>
-    <div>
+    <span style="background-color: bisque; color: black">导入结果</span>
+    <div table>
       <table rules="rows" frame="below" cellpadding="5">
-        <summary style="background-color: bisque;">导入结果</summary>
         <tr>
           <th>账户名称</th>
           <th>用户名</th>

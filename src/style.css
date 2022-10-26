@@ -62,7 +62,10 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  width: 100vw;
+  height: 100vh;
   background-image: url('./assets/20210222111729535.jpg');
+  overflow: scroll;
 }
 
 h1 {
@@ -94,10 +97,26 @@ button:focus-visible {
 }
 
 #app {
-  max-width: 1280px;
+  max-width: calc(100% - 4rem);
+  max-height: calc(100% - 4rem);
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  overflow: scroll;
+}
+
+th, td {
+  min-width: 4rem;
+}
+
+table {
+  color: black;
+}
+
+div[table] {
+  max-width: 100%;
+  max-height: 60vh;
+  overflow: scroll;
 }
 
 @media (prefers-color-scheme: light) {
