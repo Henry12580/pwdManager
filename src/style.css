@@ -65,7 +65,6 @@ body {
   width: 100vw;
   height: 100vh;
   background-image: url('./assets/20210222111729535.jpg');
-  overflow: scroll;
 }
 
 h1 {
@@ -102,7 +101,7 @@ button:focus-visible {
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-  overflow: scroll;
+  overflow: auto;
 }
 
 th, td {
@@ -116,7 +115,7 @@ table {
 div[table] {
   max-width: 100%;
   max-height: 60vh;
-  overflow: scroll;
+  overflow: auto;
 }
 
 @media (prefers-color-scheme: light) {
