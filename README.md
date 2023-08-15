@@ -1,16 +1,41 @@
-# Vue 3 + TypeScript + Vite
+# 账户管理器
 
-This template should help get you started developing with Vue 3 and TypeScript in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+Web端纯本地账户信息管理工具，利用indexedDB实现各个平台账号相关信息的存储管理，并通过PWA实现Web应用安装与离线访问。
 
-## Recommended IDE Setup
+![账户管理器](/pictures/pwdManager.png)
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+## 技术实现
 
-## Type Support For `.vue` Imports in TS
+### Vue3 + Typescript + indexedDB + PWA(service worker) + crypto-js
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can enable Volar's Take Over mode by following these steps:
+## 功能描述
 
-1. Run `Extensions: Show Built-in Extensions` from VS Code's command palette, look for `TypeScript and JavaScript Language Features`, then right click and select `Disable (Workspace)`. By default, Take Over mode will enable itself if the default TypeScript extension is disabled.
-2. Reload the VS Code window by running `Developer: Reload Window` from the command palette.
+### 新建账户
 
-You can learn more about Take Over mode [here](https://github.com/johnsoncodehk/volar/discussions/471).
+密码经过aes对称加密存储。
+
+![新建账户](/pictures/addPwd.png)
+
+### 检索账户
+
+![检索账户](/pictures/searchPwd.png)
+
+### 修改账户
+
+![修改账户](/pictures/modifyPwd.png)
+
+### 查看所有账户
+
+提供批量导出至剪贴板功能，为防止其他app读取剪贴板，导出到剪贴板的数据再经过一层aes加密。
+
+![查看所有](/pictures/viewRepo.png)
+
+### 批量导入
+
+加密导出至剪贴板的数据，解密后导入数据库。
+
+![批量导入](/pictures/importRepo.png)
+
+### 清空数据库
+
+点击清空时会跳出alert，再次确认后清空indexedDB数据库。
