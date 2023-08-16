@@ -1,81 +1,44 @@
 <script setup lang="ts">
 import { AES } from 'crypto-js';
+import DBstore from '../store';
+import { IDB_OPEN_ERROR, ADD_SUCCESS, ADD_FAILURE } from '../messages';
+
 const encrypt_key = 'wodieshihuangxin';
 
-function addPwd(formList: any): boolean {
+let { db } = DBstore;
+if (!db) {
+  try {
+    db = await DBstore.openDB();
+  } catch(err) {
+    alert(IDB_OPEN_ERROR);
+  }
+}
+
+async function addPwd(formList: any): Promise<boolean> {
   const formData: any = {};
   formData.account = formList[0].value;
   formData.name = formList[1].value;
   formData.password = AES.encrypt(formList[2].value, encrypt_key).toString();
   formData.extraInfo = formList[3].value;
-  
-  const { indexedDB } = window;
-
-  if (!indexedDB) {
-    alert('当前浏览器不支持本地数据库！');
-    return false;
-  }
-
-  let db: any;
 
   //add data;
-  function addData(): void {
+  const { tableName } = DBstore;
+  if (db) {
     const transResult = db.transaction(tableName, 'readwrite').objectStore(tableName).add(formData);
     transResult.onsuccess = function(e: Event): any {
-      alert('添加成功！');
+      alert(ADD_SUCCESS);
     };
     transResult.onerror = function(e: Event): any {
-      alert('添加失败！账户名称已存在！');
+      alert(ADD_FAILURE);
     }
   }
-
-  //(create and)open database;
-  const dbName = 'AccountManager';
-  const tableName = 'accounts';
-  const request = indexedDB.open(dbName);
-  request.onerror = function(e: Event): void {
-    alert('数据库打开失败！请检查是否禁用了indexedDB数据库！');
-  };
-  request.onsuccess = function(e: Event): void {
-    db = this.result;
-    addData();
-  };
-  request.onupgradeneeded = (e: any) => {
-    db = e.target.result;
-    const objectStore = db.createObjectStore(tableName, {autoIncrement: true});
-    objectStore.createIndex('account', 'account', {unique: true});
-    objectStore.createIndex('name', 'name', {unique: false});
-    objectStore.createIndex('password', 'password', {unique: false});
-  }
-
   return true;
 }
 
 function onSubmit(e: any): void{
   e.preventDefault();
-  // const formData = ['account', 'name', 'password', 'extraInfo'];
-  // let formValid = true;
-  // for (const data of formData) {
-  //   const dataNode = document.querySelector(`#input-${data}`) as HTMLInputElement;
-  //   if (!dataNode.value && dataNode.required) {
-  //     dataNode.style.borderColor = 'red';
-  //     dataNode.value = dataNode.name + '是必填项！';
-  //     formValid = false;
-  //   }
-  // };
-  // if (formValid) {
-    addPwd(e.target);
-  // }
+  addPwd(e.target);
 }
-
-// function onFocus(e: Event): void {
-//   e.preventDefault();
-//   const inputElem = e.target as HTMLInputElement;
-//   if (inputElem.style.borderColor === 'red') {
-//     inputElem.style.borderColor = '';
-//     inputElem.value = '';
-//   }
-// }
 
 function clearInput() {
   document.querySelectorAll('input').forEach((input: any) => {
@@ -98,6 +61,6 @@ function clearInput() {
       <button type='submit'>确认</button>
       <button type="button" @click="clearInput()">清除输入</button>
     </form>
-    <button type="button" @click="$emit('changeRoute', '/')">返回主页</button>
+    <button type="button" @click="$router.back()">返回首页</button>
   </div>
 </template>
